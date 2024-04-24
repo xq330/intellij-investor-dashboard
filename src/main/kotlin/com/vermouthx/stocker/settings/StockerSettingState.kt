@@ -12,4 +12,5 @@ class StockerSettingState {
     var hkStocksList: MutableList<String> = mutableListOf()
     var usStocksList: MutableList<String> = mutableListOf()
     var cryptoList: MutableList<String> = mutableListOf()
+    var qHList: MutableList<String> = mutableListOf()
 }

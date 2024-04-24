@@ -30,7 +30,7 @@ object StockerQuoteHttpUtil {
         }
         val codesParam = when (quoteProvider) {
             StockerQuoteProvider.SINA -> {
-                if (marketType == StockerMarketType.HKStocks) {
+                if (marketType == StockerMarketType.HKStocks || marketType == StockerMarketType.QH) {
                     codes.joinToString(",") { code ->
                         "${quoteProvider.providerPrefixMap[marketType]}${code.uppercase()}"
                     }
@@ -74,7 +74,7 @@ object StockerQuoteHttpUtil {
     ): Boolean {
         when (quoteProvider) {
             StockerQuoteProvider.SINA -> {
-                val url = if (marketType == StockerMarketType.HKStocks) {
+                val url = if (marketType == StockerMarketType.HKStocks || marketType == StockerMarketType.QH) {
                     "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.uppercase()}"
                 } else {
                     "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.lowercase()}"

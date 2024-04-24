@@ -8,6 +8,7 @@ public interface StockerQuoteReloadNotifier {
     Topic<StockerQuoteReloadNotifier> STOCK_HK_QUOTE_RELOAD_TOPIC = Topic.create("StockerHKQuoteReloadTopic", StockerQuoteReloadNotifier.class);
     Topic<StockerQuoteReloadNotifier> STOCK_US_QUOTE_RELOAD_TOPIC = Topic.create("StockerUSQuoteReloadTopic", StockerQuoteReloadNotifier.class);
     Topic<StockerQuoteReloadNotifier> STOCK_CRYPTO_QUOTE_RELOAD_TOPIC = Topic.create("StockerCryptoQuoteReloadTopic", StockerQuoteReloadNotifier.class);
+    Topic<StockerQuoteReloadNotifier> QH_QUOTE_RELOAD_TOPIC = Topic.create("QhQuoteReloadTopic", StockerQuoteReloadNotifier.class);
 
     void clear();
 }

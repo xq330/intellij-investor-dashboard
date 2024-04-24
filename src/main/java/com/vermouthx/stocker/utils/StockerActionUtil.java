@@ -25,6 +25,8 @@ public class StockerActionUtil {
                         return setting.getUsStocksList().add(code);
                     case Crypto:
                         return setting.getCryptoList().add(code);
+                    case QH:
+                        return setting.getQhList().add(code);
                 }
             } else {
                 String errMessage = fullName + " is not supported.";
@@ -53,6 +55,10 @@ public class StockerActionUtil {
                 break;
             case Crypto:
                 publisher = messageBus.syncPublisher(StockerQuoteDeleteNotifier.CRYPTO_QUOTE_DELETE_TOPIC);
+                break;
+            case QH:
+                publisher = messageBus.syncPublisher(StockerQuoteDeleteNotifier.QH_QUOTE_DELETE_TOPIC);
+                break;
 
         }
         StockerQuoteDeleteNotifier publisherToAll = messageBus.syncPublisher(StockerQuoteDeleteNotifier.STOCK_ALL_QUOTE_DELETE_TOPIC);

@@ -63,9 +63,12 @@ class StockerToolWindow : ToolWindowFactory {
                                 val publisher = messageBus.syncPublisher(STOCK_US_QUOTE_DELETE_TOPIC)
                                 publisher.after(code)
                             }
-
                             StockerMarketType.Crypto -> {
-                                val publisher = messageBus.syncPublisher(CRYPTO_QUOTE_DELETE_TOPIC)
+                                var publisher = messageBus.syncPublisher(CRYPTO_QUOTE_DELETE_TOPIC)
+                                publisher.after(code)
+                            }
+                            StockerMarketType.QH -> {
+                                var publisher = messageBus.syncPublisher(QH_QUOTE_DELETE_TOPIC)
                                 publisher.after(code)
                             }
                         }
@@ -87,7 +90,8 @@ class StockerToolWindow : ToolWindowFactory {
             StockerMarketType.AShare to StockerSimpleToolWindow(),
             StockerMarketType.HKStocks to StockerSimpleToolWindow(),
             StockerMarketType.USStocks to StockerSimpleToolWindow(),
-            StockerMarketType.Crypto to StockerSimpleToolWindow()
+            StockerMarketType.Crypto to StockerSimpleToolWindow(),
+            StockerMarketType.QH to StockerSimpleToolWindow()
         )
         myApplication = StockerApp()
     }
@@ -116,14 +120,14 @@ class StockerToolWindow : ToolWindowFactory {
             injectPopupMenu(project, tabViewMap[StockerMarketType.USStocks])
         }
         contentManager.addContent(usStocksContent)
-//        val cryptoContent = contentFactory.createContent(
-//            tabViewMap[StockerMarketType.Crypto]?.component,
-//            StockerMarketType.Crypto.title,
-//            false
-//        ).also {
-//            injectPopupMenu(project, tabViewMap[StockerMarketType.Crypto])
-//        }
-//        contentManager.addContent(cryptoContent)
+
+        val qhContent = contentFactory.createContent(
+            tabViewMap[StockerMarketType.QH]?.component, StockerMarketType.QH.title, false
+        ).also {
+            injectPopupMenu(project, tabViewMap[StockerMarketType.QH])
+        }
+        contentManager.addContent(qhContent)
+
         this.subscribeMessage()
         StockerAppManager.myApplicationMap[project] = myApplication
         myApplication.schedule()
@@ -204,6 +208,24 @@ class StockerToolWindow : ToolWindowFactory {
                     )
                     messageBus.connect().subscribe(
                         STOCK_CRYPTO_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(
+                            myTableView.tableView
+                        )
+                    )
+                }
+
+                StockerMarketType.QH -> {
+                    messageBus.connect().subscribe(
+                        QH_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(
+                            myTableView.tableView
+                        )
+                    )
+                    messageBus.connect().subscribe(
+                        QH_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(
+                            myTableView.tableView
+                        )
+                    )
+                    messageBus.connect().subscribe(
+                        QH_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(
                             myTableView.tableView
                         )
                     )

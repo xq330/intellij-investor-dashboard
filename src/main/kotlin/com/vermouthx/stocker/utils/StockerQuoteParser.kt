@@ -131,6 +131,30 @@ object StockerQuoteParser {
                         updateAt = updateAt
                     )
                 }
+
+                StockerMarketType.QH -> {
+                    val code = textArray[0].uppercase()
+                    val name = textArray[17]
+                    val current = textArray[8].toDouble()
+                    val low = textArray[5].toDouble()
+                    val high = textArray[4].toDouble()
+                    val opening = textArray[3].toDouble()
+                    val change = (current - opening).twoDigits()
+                    val percentage = ((current - opening) / opening * 100).twoDigits()
+                    val updateAt = "${textArray[18]} ${textArray[1]}"
+                    StockerQuote(
+                        code = code,
+                        name = name,
+                        current = current,
+                        opening = opening,
+                        close = current,
+                        low = low,
+                        high = high,
+                        change = change,
+                        percentage = percentage,
+                        updateAt = updateAt
+                    )
+                }
             }
         }.toList()
     }
@@ -143,6 +167,7 @@ object StockerQuoteParser {
                     text.indexOfFirst { c -> c == '=' })
 
                 StockerMarketType.Crypto -> ""
+                StockerMarketType.QH -> ""
             }
             "$code~${text.subSequence(text.indexOfFirst { c -> c == '"' } + 1, text.indexOfLast { c -> c == '"' })}"
         }.map { text -> text.split("~") }.map { textArray ->
@@ -172,6 +197,7 @@ object StockerQuoteParser {
 
                 StockerMarketType.USStocks -> textArray[31]
                 StockerMarketType.Crypto -> ""
+                StockerMarketType.QH -> ""
             }
             StockerQuote(
                 code = code,

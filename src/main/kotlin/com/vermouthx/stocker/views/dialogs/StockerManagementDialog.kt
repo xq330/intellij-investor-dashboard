@@ -39,7 +39,7 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
         tabbedPane.add("CN", createTabContent(0))
         tabbedPane.add("HK", createTabContent(1))
         tabbedPane.add("US", createTabContent(2))
-//        tabbedPane.add("Crypto", createTabContent(3))
+        tabbedPane.add("QH", createTabContent(3))
         tabbedPane.addChangeListener {
             currentMarketSelection = when (tabbedPane.selectedIndex) {
                 0 -> {
@@ -53,9 +53,10 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
                 2 -> {
                     StockerMarketType.USStocks
                 }
-//                3 -> {
-//                    StockerMarketType.Crypto
-//                }
+
+                3 -> {
+                    StockerMarketType.QH
+                }
                 else -> return@addChangeListener
             }
         }
@@ -93,6 +94,17 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
             renderTabPane(pane, usStocksListModel)
         }
 
+        val qHListModel = DefaultListModel<StockerQuote>()
+        qHListModel.addAll(
+            StockerQuoteHttpUtil.get(
+                StockerMarketType.QH, setting.quoteProvider, setting.qhList
+            )
+        )
+        currentSymbols[StockerMarketType.QH] = qHListModel
+        tabMap[2]?.let { pane ->
+            renderTabPane(pane, qHListModel)
+        }
+
         tabbedPane.selectedIndex = 0
         return panel {
             row {
@@ -116,6 +128,9 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
                         }
                         currentSymbols[StockerMarketType.USStocks]?.let { symbols ->
                             setting.usStocksList = symbols.elements().asSequence().map { it.code }.toMutableList()
+                        }
+                        currentSymbols[StockerMarketType.QH]?.let { symbols ->
+                            setting.qhList = symbols.elements().asSequence().map { it.code }.toMutableList()
                         }
                         myApplication.schedule()
                     }

@@ -72,14 +72,21 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
             myState.cryptoList = value
         }
 
+    var qhList: MutableList<String>
+        get() = myState.qHList
+        set(value) {
+            myState.qHList = value
+        }
+
     val allStockListSize: Int
-        get() = aShareList.size + hkStocksList.size + usStocksList.size + cryptoList.size
+        get() = aShareList.size + hkStocksList.size + usStocksList.size + cryptoList.size + qhList.size
 
     fun containsCode(code: String): Boolean {
         return aShareList.contains(code) ||
                 hkStocksList.contains(code) ||
                 usStocksList.contains(code) ||
-                cryptoList.contains(code)
+                cryptoList.contains(code) ||
+                qhList.contains(code)
     }
 
     fun marketOf(code: String): StockerMarketType? {
@@ -94,6 +101,9 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
         }
         if (cryptoList.contains(code)) {
             return StockerMarketType.Crypto
+        }
+        if (qhList.contains(code)) {
+            return StockerMarketType.QH
         }
         return null
     }
@@ -121,6 +131,11 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
             StockerMarketType.Crypto -> {
                 synchronized(cryptoList) {
                     cryptoList.remove(code)
+                }
+            }
+            StockerMarketType.QH -> {
+                synchronized(qhList) {
+                    qhList.remove(code)
                 }
             }
         }

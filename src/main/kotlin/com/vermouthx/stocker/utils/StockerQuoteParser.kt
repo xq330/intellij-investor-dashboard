@@ -134,11 +134,11 @@ object StockerQuoteParser {
 
                 StockerMarketType.QH -> {
                     val code = textArray[0].uppercase()
-                    val name = textArray[17]
-                    val current = textArray[8].toDouble()
+                    val name = textArray[1]
+                    val current = textArray[9].toDouble()
                     val low = textArray[5].toDouble()
                     val high = textArray[4].toDouble()
-                    val opening = textArray[3].toDouble()
+                    val opening = textArray[11].toDouble()
                     val change = (current - opening).twoDigits()
                     val percentage = ((current - opening) / opening * 100).twoDigits()
                     val updateAt = "${textArray[18]} ${textArray[1]}"

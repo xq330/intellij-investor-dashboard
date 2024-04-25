@@ -133,7 +133,7 @@ object StockerQuoteParser {
                 }
 
                 StockerMarketType.QH -> {
-                    val code = textArray[0].uppercase()
+                    val code = textArray[0].substring(3).uppercase()
                     val name = textArray[1]
                     val current = textArray[9].toDouble()
                     val low = textArray[5].toDouble()

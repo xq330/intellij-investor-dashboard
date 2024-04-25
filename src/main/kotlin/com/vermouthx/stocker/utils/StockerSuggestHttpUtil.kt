@@ -10,8 +10,52 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.HttpClients
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 import org.apache.http.util.EntityUtils
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object StockerSuggestHttpUtil {
+
+    @JvmStatic
+    private var futures: Map<String,String> = mapOf(
+        Pair("玉米", "C"),
+        Pair("大豆", "A"),
+        Pair("豆粕", "M"),
+        Pair("豆油", "Y"),
+        Pair("棕榈油", "P"),
+        Pair("白糖", "SR"),
+        Pair("棉花", "CF"),
+        Pair("PTA", "TA"),
+        Pair("橡胶", "RU"),
+        Pair("铜", "CU"),
+        Pair("铝", "AL"),
+        Pair("锌", "ZN"),
+        Pair("铅", "PB"),
+        Pair("镍", "NI"),
+        Pair("锡", "SN"),
+        Pair("黄金", "AU"),
+        Pair("白银", "AG"),
+        Pair("螺纹钢", "RB"),
+        Pair("线材", "WR"),
+        Pair("热卷", "HC"),
+        Pair("铁矿石", "I"),
+        Pair("焦煤", "JM"),
+        Pair("焦炭", "J"),
+        Pair("鸡蛋", "JD"),
+        Pair("玻璃", "FG"),
+        Pair("动力煤", "ZC"),
+        Pair("甲醇", "MA"),
+        Pair("聚乙烯", "L"),
+        Pair("聚氯乙烯", "V"),
+        Pair("聚丙烯", "PP"),
+        Pair("沥青", "BU"),
+        Pair("纸浆", "SP"),
+        Pair("苹果", "AP"),
+        Pair("红枣", "CJ"),
+        Pair("尿素", "UR"),
+        Pair("粳米", "RR"),
+        Pair("液化气", "PG"),
+        Pair("期权", "OPTIONS")
+    )
 
     private val log = Logger.getInstance(javaClass)
 
@@ -24,6 +68,10 @@ object StockerSuggestHttpUtil {
     }
 
     fun suggest(key: String, provider: StockerQuoteProvider): List<StockerSuggestion> {
+        var list = parseQhSuggestion(key)
+        if(list.size > 0){
+            return list
+        }
         val url = "${provider.suggestHost}$key"
         val httpGet = HttpGet(url)
         if (provider == StockerQuoteProvider.SINA) {
@@ -47,6 +95,40 @@ object StockerSuggestHttpUtil {
             log.warn(e)
             emptyList()
         }
+    }
+
+    private fun parseQhSuggestion(key: String) :List<StockerSuggestion> {
+        val result = mutableListOf<StockerSuggestion>()
+        for (entry in futures) {
+            if(key == entry.key){
+                var monthList = generateYearMonthList()
+                result.add(StockerSuggestion(futures[key].toString() + "0",  key + "连续",StockerMarketType.QH))
+                for (month in monthList) {
+                    result.add(StockerSuggestion(futures[key].toString() + "" + month,  key + "" + month,StockerMarketType.QH))
+                }
+                break
+            }
+        }
+        return result;
+    }
+
+    fun generateYearMonthList(): List<String> {
+        // 获取当前的日期
+        val currentDate = LocalDate.now()
+        // 准备一个列表来存储12个月的年月字符串
+        val yearMonthList = mutableListOf<String>()
+        // 日期格式化器，用于获取年份后两位和月份
+        val formatter = DateTimeFormatter.ofPattern("yyMM")
+        // 生成从当前月开始的12个月
+        for (i in 0 until 12) {
+            // 计算当前日期之后的月份
+            val futureDate = currentDate.plusMonths(i.toLong())
+            // 将日期格式化为特定字符串
+            val formattedDate = futureDate.format(formatter)
+            // 将生成的字符串加入列表
+            yearMonthList.add(formattedDate)
+        }
+        return yearMonthList
     }
 
     private fun parseSinaSuggestion(responseText: String): List<StockerSuggestion> {

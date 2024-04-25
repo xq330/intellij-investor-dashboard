@@ -5,5 +5,5 @@ enum class StockerMarketIndex(val codes: List<String>) {
     HK(listOf("HSI")),
     US(listOf("DJI", "IXIC", "INX")),
     Crypto(listOf("BTCBTCUSD")),
-    QH(listOf("C0"))
+    QH(listOf("C0","MA0"))
 }

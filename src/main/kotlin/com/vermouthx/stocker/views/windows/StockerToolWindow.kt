@@ -108,6 +108,12 @@ class StockerToolWindow : ToolWindowFactory {
             injectPopupMenu(project, tabViewMap[StockerMarketType.AShare])
         }
         contentManager.addContent(aShareContent)
+        val qhContent = contentFactory.createContent(
+            tabViewMap[StockerMarketType.QH]?.component, StockerMarketType.QH.title, false
+        ).also {
+            injectPopupMenu(project, tabViewMap[StockerMarketType.QH])
+        }
+        contentManager.addContent(qhContent)
         val hkStocksContent = contentFactory.createContent(
             tabViewMap[StockerMarketType.HKStocks]?.component, StockerMarketType.HKStocks.title, false
         ).also {
@@ -121,12 +127,6 @@ class StockerToolWindow : ToolWindowFactory {
         }
         contentManager.addContent(usStocksContent)
 
-        val qhContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.QH]?.component, StockerMarketType.QH.title, false
-        ).also {
-            injectPopupMenu(project, tabViewMap[StockerMarketType.QH])
-        }
-        contentManager.addContent(qhContent)
 
         this.subscribeMessage()
         StockerAppManager.myApplicationMap[project] = myApplication

@@ -58,8 +58,8 @@ object StockerSuggestHttpUtil {
     val dceFutures = mapOf(
         Pair("玉米", "C"),
         Pair("玉米淀粉", "CS"),
-        Pair("大豆一号", "A"),
-        Pair("大豆二号", "B"),
+        Pair("豆一", "A"),
+        Pair("豆二", "B"),
         Pair("豆粕", "M"),
         Pair("豆油", "Y"),
         Pair("棕榈油", "P"),
@@ -74,17 +74,17 @@ object StockerSuggestHttpUtil {
     )
 
     // 中国金融期货交易所的期货品种和代码
-    val cffexFutures = mapOf(
-        Pair("沪深300股指期货", "IF"),
-        Pair("中证500股指期货", "IC"),
-        Pair("上证50股指期货", "IH"),
-        Pair("10年期国债期货", "T"),
-        Pair("5年期国债期货", "TF"),
-        Pair("2年期国债期货", "TS")
-    )
+//    val cffexFutures = mapOf(
+//        Pair("沪深300", "IF"),
+//        Pair("中证500", "IC"),
+//        Pair("上证50", "IH"),
+//        Pair("十债", "T"),
+//        Pair("五债", "TF"),
+//        Pair("二债", "TS")
+//    )
 
     // 汇总所有期货品种和代码
-    private var futures: Map<String,String> = shfeFutures + czceFutures + dceFutures + cffexFutures
+    private var futures: Map<String,String> = shfeFutures + czceFutures + dceFutures
 
     private val log = Logger.getInstance(javaClass)
 

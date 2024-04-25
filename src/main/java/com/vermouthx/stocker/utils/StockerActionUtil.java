@@ -32,6 +32,7 @@ public class StockerActionUtil {
                 String errMessage = fullName + " is not supported.";
                 String errTitle = "Not Supported Stock";
                 Messages.showErrorDialog(project, errMessage, errTitle);
+                removeStock(market, suggest);
                 return false;
             }
         }

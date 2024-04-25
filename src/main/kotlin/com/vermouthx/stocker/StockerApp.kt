@@ -85,7 +85,7 @@ class StockerApp {
                 StockerQuoteHttpUtil.get(StockerMarketType.AShare, quoteProvider, setting.aShareList),
                 StockerQuoteHttpUtil.get(StockerMarketType.HKStocks, quoteProvider, setting.hkStocksList),
                 StockerQuoteHttpUtil.get(StockerMarketType.USStocks, quoteProvider, setting.usStocksList),
-                StockerQuoteHttpUtil.get(StockerMarketType.QH, quoteProvider, setting.cryptoList)
+                StockerQuoteHttpUtil.get(StockerMarketType.QH, quoteProvider, setting.qhList)
             ).flatten()
             val allStockIndices = listOf(
                 StockerQuoteHttpUtil.get(StockerMarketType.AShare, quoteProvider, StockerMarketIndex.CN.codes),

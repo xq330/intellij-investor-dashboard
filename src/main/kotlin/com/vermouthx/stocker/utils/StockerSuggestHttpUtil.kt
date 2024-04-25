@@ -14,18 +14,8 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 object StockerSuggestHttpUtil {
-
-    @JvmStatic
-    private var futures: Map<String,String> = mapOf(
-        Pair("玉米", "C"),
-        Pair("大豆", "A"),
-        Pair("豆粕", "M"),
-        Pair("豆油", "Y"),
-        Pair("棕榈油", "P"),
-        Pair("白糖", "SR"),
-        Pair("棉花", "CF"),
-        Pair("PTA", "TA"),
-        Pair("橡胶", "RU"),
+    // 上海期货交易所的期货品种和代码
+    val shfeFutures = mapOf(
         Pair("铜", "CU"),
         Pair("铝", "AL"),
         Pair("锌", "ZN"),
@@ -37,25 +27,64 @@ object StockerSuggestHttpUtil {
         Pair("螺纹钢", "RB"),
         Pair("线材", "WR"),
         Pair("热卷", "HC"),
-        Pair("铁矿石", "I"),
-        Pair("焦煤", "JM"),
-        Pair("焦炭", "J"),
-        Pair("鸡蛋", "JD"),
-        Pair("玻璃", "FG"),
-        Pair("动力煤", "ZC"),
-        Pair("甲醇", "MA"),
-        Pair("聚乙烯", "L"),
-        Pair("聚氯乙烯", "V"),
-        Pair("聚丙烯", "PP"),
+        Pair("不锈钢", "SS"),
         Pair("沥青", "BU"),
-        Pair("纸浆", "SP"),
+        Pair("原油", "SC"),
+        Pair("纸浆", "SP")
+    )
+
+    // 郑州商品交易所的期货品种和代码
+    val czceFutures = mapOf(
+        Pair("棉花", "CF"),
+        Pair("白糖", "SR"),
+        Pair("PTA", "TA"),
+        Pair("甲醇", "MA"),
+        Pair("玻璃", "FG"),
+        Pair("纯碱", "SA"),
         Pair("苹果", "AP"),
         Pair("红枣", "CJ"),
         Pair("尿素", "UR"),
-        Pair("粳米", "RR"),
-        Pair("液化气", "PG"),
-        Pair("期权", "OPTIONS")
+        Pair("菜籽油", "OI"),
+        Pair("菜籽粕", "RM"),
+        Pair("动力煤", "ZC"),
+        Pair("硅铁", "SF"),
+        Pair("锰硅", "SM"),
+        Pair("鸡蛋", "JD"),
+        Pair("花生", "PK"),
+        Pair("棉纱", "CY")
     )
+
+    // 大连商品交易所的期货品种和代码
+    val dceFutures = mapOf(
+        Pair("玉米", "C"),
+        Pair("玉米淀粉", "CS"),
+        Pair("大豆一号", "A"),
+        Pair("大豆二号", "B"),
+        Pair("豆粕", "M"),
+        Pair("豆油", "Y"),
+        Pair("棕榈油", "P"),
+        Pair("聚乙烯", "L"),
+        Pair("聚氯乙烯", "V"),
+        Pair("聚丙烯", "PP"),
+        Pair("铁矿石", "I"),
+        Pair("焦煤", "JM"),
+        Pair("焦炭", "J"),
+        Pair("乙二醇", "EG"),
+        Pair("LPG", "PG")
+    )
+
+    // 中国金融期货交易所的期货品种和代码
+    val cffexFutures = mapOf(
+        Pair("沪深300股指期货", "IF"),
+        Pair("中证500股指期货", "IC"),
+        Pair("上证50股指期货", "IH"),
+        Pair("10年期国债期货", "T"),
+        Pair("5年期国债期货", "TF"),
+        Pair("2年期国债期货", "TS")
+    )
+
+    // 汇总所有期货品种和代码
+    private var futures: Map<String,String> = shfeFutures + czceFutures + dceFutures + cffexFutures
 
     private val log = Logger.getInstance(javaClass)
 

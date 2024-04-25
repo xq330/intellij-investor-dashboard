@@ -101,7 +101,7 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
             )
         )
         currentSymbols[StockerMarketType.QH] = qHListModel
-        tabMap[2]?.let { pane ->
+        tabMap[3]?.let { pane ->
             renderTabPane(pane, qHListModel)
         }
 

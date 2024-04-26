@@ -121,7 +121,8 @@ public class StockerTableView {
     private static final String codeColumn = "Symbol";
     private static final String nameColumn = "Name";
     private static final String currentColumn = "Current";
-    private static final String percentColumn = "Change%";
+    private static final String percentColumn = "PCT";
+    private static final String changeColumn = "Change";
 
     private void initTable() {
         tbModel = new StockerTableModel();
@@ -139,7 +140,7 @@ public class StockerTableView {
                 }
             }
         });
-        tbModel.setColumnIdentifiers(new String[]{codeColumn, nameColumn, currentColumn, percentColumn});
+        tbModel.setColumnIdentifiers(new String[]{codeColumn, nameColumn, currentColumn, percentColumn, changeColumn});
 
         tbBody.setShowVerticalLines(false);
         tbBody.setModel(tbModel);
@@ -167,6 +168,16 @@ public class StockerTableView {
                 setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
                 String percent = value.toString();
                 Double v = Double.parseDouble(percent.substring(0, percent.indexOf("%")));
+                applyColorPatternToTable(v, this);
+                return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            }
+        });
+        tbBody.getColumn(changeColumn).setCellRenderer(new StockerDefaultTableCellRender() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                syncColorPatternSetting();
+                setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+                Double v = Double.parseDouble(value.toString());
                 applyColorPatternToTable(v, this);
                 return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             }

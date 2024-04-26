@@ -33,9 +33,13 @@ public class StockerQuoteUpdateListener implements StockerQuoteUpdateNotifier {
                         tableModel.setValueAt(quote.getPercentage() + "%", rowIndex, 3);
                         tableModel.fireTableCellUpdated(rowIndex, 3);
                     }
+                    if (!tableModel.getValueAt(rowIndex, 4).equals(quote.getChange())) {
+                        tableModel.setValueAt(quote.getChange() , rowIndex, 4);
+                        tableModel.fireTableCellUpdated(rowIndex, 4);
+                    }
                 } else {
                     if (quotes.size() == size) {
-                        tableModel.addRow(new Object[]{quote.getCode(), quote.getName(), quote.getCurrent(), quote.getPercentage() + "%"});
+                        tableModel.addRow(new Object[]{quote.getCode(), quote.getName(), quote.getCurrent(), quote.getPercentage() + "%", quote.getChange()});
                     }
                 }
             }

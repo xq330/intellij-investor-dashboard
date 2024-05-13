@@ -29,8 +29,15 @@ object StockerSuggestHttpUtil {
         Pair("热卷", "HC"),
         Pair("不锈钢", "SS"),
         Pair("沥青", "BU"),
-        Pair("原油", "SC"),
         Pair("纸浆", "SP")
+    )
+    // 上期能源的期货品种和代码
+    var shIneFutures = mapOf(
+        Pair("原油", "SC"),
+        Pair("集运", "EC"),
+        Pair("国际铜", "BC"),
+        Pair("低硫燃油", "LU"),
+        Pair("20号胶", "NR")
     )
 
     // 郑州商品交易所的期货品种和代码
@@ -84,7 +91,7 @@ object StockerSuggestHttpUtil {
 //    )
 
     // 汇总所有期货品种和代码
-    private var futures: Map<String,String> = shfeFutures + czceFutures + dceFutures
+    private var futures: Map<String,String> = shfeFutures + shIneFutures + czceFutures + dceFutures
 
     private val log = Logger.getInstance(javaClass)
 

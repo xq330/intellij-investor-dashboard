@@ -37,9 +37,7 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
     override fun createCenterPanel(): DialogPanel {
         val tabbedPane = JBTabbedPane()
         tabbedPane.add("CN", createTabContent(0))
-        tabbedPane.add("HK", createTabContent(1))
-        tabbedPane.add("US", createTabContent(2))
-        tabbedPane.add("QH", createTabContent(3))
+        tabbedPane.add("QH", createTabContent(1))
         tabbedPane.addChangeListener {
             currentMarketSelection = when (tabbedPane.selectedIndex) {
                 0 -> {
@@ -47,14 +45,6 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
                 }
 
                 1 -> {
-                    StockerMarketType.HKStocks
-                }
-
-                2 -> {
-                    StockerMarketType.USStocks
-                }
-
-                3 -> {
                     StockerMarketType.QH
                 }
                 else -> return@addChangeListener
@@ -72,28 +62,6 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
             renderTabPane(pane, aShareListModel)
         }
 
-        val hkStocksListModel = DefaultListModel<StockerQuote>()
-        hkStocksListModel.addAll(
-            StockerQuoteHttpUtil.get(
-                StockerMarketType.HKStocks, setting.quoteProvider, setting.hkStocksList
-            )
-        )
-        currentSymbols[StockerMarketType.HKStocks] = hkStocksListModel
-        tabMap[1]?.let { pane ->
-            renderTabPane(pane, hkStocksListModel)
-        }
-
-        val usStocksListModel = DefaultListModel<StockerQuote>()
-        usStocksListModel.addAll(
-            StockerQuoteHttpUtil.get(
-                StockerMarketType.USStocks, setting.quoteProvider, setting.usStocksList
-            )
-        )
-        currentSymbols[StockerMarketType.USStocks] = usStocksListModel
-        tabMap[2]?.let { pane ->
-            renderTabPane(pane, usStocksListModel)
-        }
-
         val qHListModel = DefaultListModel<StockerQuote>()
         qHListModel.addAll(
             StockerQuoteHttpUtil.get(
@@ -101,7 +69,7 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
             )
         )
         currentSymbols[StockerMarketType.QH] = qHListModel
-        tabMap[3]?.let { pane ->
+        tabMap[1]?.let { pane ->
             renderTabPane(pane, qHListModel)
         }
 
@@ -122,12 +90,6 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
                         myApplication.shutdownThenClear()
                         currentSymbols[StockerMarketType.AShare]?.let { symbols ->
                             setting.aShareList = symbols.elements().asSequence().map { it.code }.toMutableList()
-                        }
-                        currentSymbols[StockerMarketType.HKStocks]?.let { symbols ->
-                            setting.hkStocksList = symbols.elements().asSequence().map { it.code }.toMutableList()
-                        }
-                        currentSymbols[StockerMarketType.USStocks]?.let { symbols ->
-                            setting.usStocksList = symbols.elements().asSequence().map { it.code }.toMutableList()
                         }
                         currentSymbols[StockerMarketType.QH]?.let { symbols ->
                             setting.qhList = symbols.elements().asSequence().map { it.code }.toMutableList()

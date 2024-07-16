@@ -30,7 +30,7 @@ object StockerQuoteHttpUtil {
         }
         val codesParam = when (quoteProvider) {
             StockerQuoteProvider.SINA -> {
-                if (marketType == StockerMarketType.HKStocks || marketType == StockerMarketType.QH) {
+                if (marketType == StockerMarketType.QH) {
                     codes.joinToString(",") { code ->
                         "${quoteProvider.providerPrefixMap[marketType]}${code.uppercase()}"
                     }
@@ -42,15 +42,9 @@ object StockerQuoteHttpUtil {
             }
 
             StockerQuoteProvider.TENCENT -> {
-                if (marketType == StockerMarketType.HKStocks || marketType == StockerMarketType.USStocks) {
-                    codes.joinToString(",") { code ->
-                        "${quoteProvider.providerPrefixMap[marketType]}${code.uppercase()}"
-                    }
-                } else {
                     codes.joinToString(",") { code ->
                         "${quoteProvider.providerPrefixMap[marketType]}${code.lowercase()}"
                     }
-                }
             }
         }
 
@@ -74,7 +68,7 @@ object StockerQuoteHttpUtil {
     ): Boolean {
         when (quoteProvider) {
             StockerQuoteProvider.SINA -> {
-                val url = if (marketType == StockerMarketType.HKStocks || marketType == StockerMarketType.QH) {
+                val url = if (marketType == StockerMarketType.QH) {
                     "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.uppercase()}"
                 } else {
                     "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.lowercase()}"
@@ -93,11 +87,7 @@ object StockerQuoteHttpUtil {
             }
 
             StockerQuoteProvider.TENCENT -> {
-                val url = if (marketType == StockerMarketType.HKStocks || marketType == StockerMarketType.USStocks) {
-                    "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.uppercase()}"
-                } else {
-                    "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.lowercase()}"
-                }
+                val url = "${quoteProvider.host}${quoteProvider.providerPrefixMap[marketType]}${code.lowercase()}"
                 val httpGet = HttpGet(url)
                 val response = httpClientPool.execute(httpGet)
                 val responseText = EntityUtils.toString(response.entity, "UTF-8")

@@ -12,9 +12,6 @@ enum class StockerQuoteProvider(
         suggestHost = "https://suggest3.sinajs.cn/suggest/key=",
         providerPrefixMap = mapOf(
             StockerMarketType.AShare to "",
-            StockerMarketType.HKStocks to "hk",
-            StockerMarketType.USStocks to "gb_",
-            StockerMarketType.Crypto to "btc_",
             StockerMarketType.QH to "nf_"
         )
     ),
@@ -28,8 +25,6 @@ enum class StockerQuoteProvider(
         suggestHost = "https://smartbox.gtimg.cn/s3/?v=2&t=all&c=1&q=",
         providerPrefixMap = mapOf(
             StockerMarketType.AShare to "",
-            StockerMarketType.HKStocks to "hk",
-            StockerMarketType.USStocks to "us",
         )
     );
 

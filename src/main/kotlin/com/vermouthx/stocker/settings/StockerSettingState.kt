@@ -9,8 +9,5 @@ class StockerSettingState {
     var quoteProvider: StockerQuoteProvider = StockerQuoteProvider.SINA
     var quoteColorPattern: StockerQuoteColorPattern = StockerQuoteColorPattern.RED_UP_GREEN_DOWN
     var aShareList: MutableList<String> = mutableListOf()
-    var hkStocksList: MutableList<String> = mutableListOf()
-    var usStocksList: MutableList<String> = mutableListOf()
-    var cryptoList: MutableList<String> = mutableListOf()
     var qHList: MutableList<String> = mutableListOf()
 }

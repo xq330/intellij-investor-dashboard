@@ -53,20 +53,6 @@ class StockerToolWindow : ToolWindowFactory {
                                 val publisher = messageBus.syncPublisher(STOCK_CN_QUOTE_DELETE_TOPIC)
                                 publisher.after(code)
                             }
-
-                            StockerMarketType.HKStocks -> {
-                                val publisher = messageBus.syncPublisher(STOCK_HK_QUOTE_DELETE_TOPIC)
-                                publisher.after(code)
-                            }
-
-                            StockerMarketType.USStocks -> {
-                                val publisher = messageBus.syncPublisher(STOCK_US_QUOTE_DELETE_TOPIC)
-                                publisher.after(code)
-                            }
-                            StockerMarketType.Crypto -> {
-                                var publisher = messageBus.syncPublisher(CRYPTO_QUOTE_DELETE_TOPIC)
-                                publisher.after(code)
-                            }
                             StockerMarketType.QH -> {
                                 var publisher = messageBus.syncPublisher(QH_QUOTE_DELETE_TOPIC)
                                 publisher.after(code)
@@ -88,9 +74,6 @@ class StockerToolWindow : ToolWindowFactory {
         allView = StockerSimpleToolWindow()
         tabViewMap = mapOf(
             StockerMarketType.AShare to StockerSimpleToolWindow(),
-            StockerMarketType.HKStocks to StockerSimpleToolWindow(),
-            StockerMarketType.USStocks to StockerSimpleToolWindow(),
-            StockerMarketType.Crypto to StockerSimpleToolWindow(),
             StockerMarketType.QH to StockerSimpleToolWindow()
         )
         myApplication = StockerApp()
@@ -114,20 +97,6 @@ class StockerToolWindow : ToolWindowFactory {
             injectPopupMenu(project, tabViewMap[StockerMarketType.QH])
         }
         contentManager.addContent(qhContent)
-// 隐藏
-//        val hkStocksContent = contentFactory.createContent(
-//            tabViewMap[StockerMarketType.HKStocks]?.component, StockerMarketType.HKStocks.title, false
-//        ).also {
-//            injectPopupMenu(project, tabViewMap[StockerMarketType.HKStocks])
-//        }
-//        contentManager.addContent(hkStocksContent)
-//        val usStocksContent = contentFactory.createContent(
-//            tabViewMap[StockerMarketType.USStocks]?.component, StockerMarketType.USStocks.title, false
-//        ).also {
-//            injectPopupMenu(project, tabViewMap[StockerMarketType.USStocks])
-//        }
-//        contentManager.addContent(usStocksContent)
-
 
         this.subscribeMessage()
         StockerAppManager.myApplicationMap[project] = myApplication
@@ -162,57 +131,6 @@ class StockerToolWindow : ToolWindowFactory {
                     )
                 }
 
-                StockerMarketType.HKStocks -> {
-                    messageBus.connect().subscribe(
-                        STOCK_HK_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(
-                            myTableView.tableView
-                        )
-                    )
-                    messageBus.connect().subscribe(
-                        STOCK_HK_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(
-                            myTableView.tableView
-                        )
-                    )
-                    messageBus.connect().subscribe(
-                        STOCK_HK_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(myTableView.tableView)
-                    )
-                }
-
-                StockerMarketType.USStocks -> {
-                    messageBus.connect().subscribe(
-                        STOCK_US_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(
-                            myTableView.tableView
-                        )
-                    )
-                    messageBus.connect().subscribe(
-                        STOCK_US_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(
-                            myTableView.tableView
-                        )
-                    )
-                    messageBus.connect().subscribe(
-                        STOCK_US_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(
-                            myTableView.tableView
-                        )
-                    )
-                }
-
-                StockerMarketType.Crypto -> {
-                    messageBus.connect().subscribe(
-                        CRYPTO_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(
-                            myTableView.tableView
-                        )
-                    )
-                    messageBus.connect().subscribe(
-                        CRYPTO_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(
-                            myTableView.tableView
-                        )
-                    )
-                    messageBus.connect().subscribe(
-                        STOCK_CRYPTO_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(
-                            myTableView.tableView
-                        )
-                    )
-                }
 
                 StockerMarketType.QH -> {
                     messageBus.connect().subscribe(

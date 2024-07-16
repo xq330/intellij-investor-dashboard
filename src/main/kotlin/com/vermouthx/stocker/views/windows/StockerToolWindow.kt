@@ -82,15 +82,14 @@ class StockerToolWindow : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val contentManager = toolWindow.contentManager
         val contentFactory = ContentFactory.getInstance()
-        val allContent =
-            contentFactory.createContent(allView.component, "ALL", false).also { injectPopupMenu(project, allView) }
-        contentManager.addContent(allContent)
+        //cn
         val aShareContent = contentFactory.createContent(
             tabViewMap[StockerMarketType.AShare]?.component, StockerMarketType.AShare.title, false
         ).also {
             injectPopupMenu(project, tabViewMap[StockerMarketType.AShare])
         }
         contentManager.addContent(aShareContent)
+        //qh
         val qhContent = contentFactory.createContent(
             tabViewMap[StockerMarketType.QH]?.component, StockerMarketType.QH.title, false
         ).also {

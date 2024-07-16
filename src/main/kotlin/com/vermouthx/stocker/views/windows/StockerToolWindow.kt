@@ -114,18 +114,19 @@ class StockerToolWindow : ToolWindowFactory {
             injectPopupMenu(project, tabViewMap[StockerMarketType.QH])
         }
         contentManager.addContent(qhContent)
-        val hkStocksContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.HKStocks]?.component, StockerMarketType.HKStocks.title, false
-        ).also {
-            injectPopupMenu(project, tabViewMap[StockerMarketType.HKStocks])
-        }
-        contentManager.addContent(hkStocksContent)
-        val usStocksContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.USStocks]?.component, StockerMarketType.USStocks.title, false
-        ).also {
-            injectPopupMenu(project, tabViewMap[StockerMarketType.USStocks])
-        }
-        contentManager.addContent(usStocksContent)
+// 隐藏
+//        val hkStocksContent = contentFactory.createContent(
+//            tabViewMap[StockerMarketType.HKStocks]?.component, StockerMarketType.HKStocks.title, false
+//        ).also {
+//            injectPopupMenu(project, tabViewMap[StockerMarketType.HKStocks])
+//        }
+//        contentManager.addContent(hkStocksContent)
+//        val usStocksContent = contentFactory.createContent(
+//            tabViewMap[StockerMarketType.USStocks]?.component, StockerMarketType.USStocks.title, false
+//        ).also {
+//            injectPopupMenu(project, tabViewMap[StockerMarketType.USStocks])
+//        }
+//        contentManager.addContent(usStocksContent)
 
 
         this.subscribeMessage()

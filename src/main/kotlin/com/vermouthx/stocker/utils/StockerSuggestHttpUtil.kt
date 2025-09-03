@@ -29,15 +29,20 @@ object StockerSuggestHttpUtil {
         Pair("热卷", "HC"),
         Pair("不锈钢", "SS"),
         Pair("沥青", "BU"),
-        Pair("纸浆", "SP")
+        Pair("纸浆", "SP"),
+        Pair("燃料油", "FU"),
+        Pair("氧化铝", "AO"),
+        Pair("天然橡胶", "RU")
     )
+
     // 上期能源的期货品种和代码
     var shIneFutures = mapOf(
         Pair("原油", "SC"),
         Pair("集运", "EC"),
         Pair("国际铜", "BC"),
         Pair("低硫燃油", "LU"),
-        Pair("20号胶", "NR")
+        Pair("20号胶", "NR"),
+        Pair("液化天然气", "NG")
     )
 
     // 郑州商品交易所的期货品种和代码
@@ -58,7 +63,10 @@ object StockerSuggestHttpUtil {
         Pair("锰硅", "SM"),
         Pair("鸡蛋", "JD"),
         Pair("花生", "PK"),
-        Pair("棉纱", "CY")
+        Pair("棉纱", "CY"),
+        Pair("短纤", "PF"),
+        Pair("涤纶", "TL"),
+        Pair("烧碱", "CL")
     )
 
     // 大连商品交易所的期货品种和代码
@@ -77,18 +85,22 @@ object StockerSuggestHttpUtil {
         Pair("焦煤", "JM"),
         Pair("焦炭", "J"),
         Pair("乙二醇", "EG"),
-        Pair("LPG", "PG")
+        Pair("LPG", "PG"),
+        Pair("生猪", "LH"),
+        Pair("粳米", "RR"),
+        Pair("苯乙烯", "EB")
     )
 
     // 中国金融期货交易所的期货品种和代码
-//    val cffexFutures = mapOf(
-//        Pair("沪深300", "IF"),
-//        Pair("中证500", "IC"),
-//        Pair("上证50", "IH"),
-//        Pair("十债", "T"),
-//        Pair("五债", "TF"),
-//        Pair("二债", "TS")
-//    )
+    val cffexFutures = mapOf(
+        Pair("沪深300", "IF"),
+        Pair("中证500", "IC"),
+        Pair("上证50", "IH"),
+        Pair("十债", "T"),
+        Pair("五债", "TF"),
+        Pair("二债", "TS"),
+        Pair("中证1000", "IM")
+    )
 
     // 汇总所有期货品种和代码
     private var futures: Map<String,String> = shfeFutures + shIneFutures + czceFutures + dceFutures

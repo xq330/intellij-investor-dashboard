@@ -49,6 +49,12 @@ class StockerToolWindow : ToolWindowFactory {
         
         val allContent = contentFactory.createContent(allView.component, "ALL", false)
         contentManager.addContent(allContent)
+        val qhContent = contentFactory.createContent(
+            tabViewMap[StockerMarketType.QH]?.component,
+            StockerMarketType.QH.title,
+            false
+        )
+        contentManager.addContent(qhContent)
         val aShareContent = contentFactory.createContent(
             tabViewMap[StockerMarketType.AShare]?.component, StockerMarketType.AShare.title, false
         )
@@ -67,12 +73,6 @@ class StockerToolWindow : ToolWindowFactory {
             false
         )
         contentManager.addContent(cryptoContent)
-        val qhContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.QH]?.component,
-            StockerMarketType.QH.title,
-            false
-        )
-        contentManager.addContent(qhContent)
         this.subscribeMessage()
         
         // Register cleanup when disposable is disposed

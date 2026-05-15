@@ -27,6 +27,7 @@ enum class StockerQuoteProvider(
         suggestHost = "https://smartbox.gtimg.cn/s3/?v=2&t=all&c=1&q=",
         providerPrefixMap = mapOf(
             StockerMarketType.AShare to "",
+            StockerMarketType.QH to "nf_"
         )
     );
 

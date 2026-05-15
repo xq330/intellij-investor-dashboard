@@ -64,6 +64,7 @@ class StockerManagementDialog(val project: Project?) : DialogWrapper(project) {
         loadMarketData(StockerMarketType.HKStocks, setting.hkStocksList)
         loadMarketData(StockerMarketType.USStocks, setting.usStocksList)
         loadMarketData(StockerMarketType.Crypto, setting.cryptoList)
+        loadMarketData(StockerMarketType.QH, setting.qhList)
 
         tabbedPane.selectedIndex = 0
         return panel {

@@ -33,7 +33,8 @@ class StockerToolWindow : ToolWindowFactory {
             StockerMarketType.AShare to StockerSimpleToolWindow(),
             StockerMarketType.HKStocks to StockerSimpleToolWindow(),
             StockerMarketType.USStocks to StockerSimpleToolWindow(),
-            StockerMarketType.Crypto to StockerSimpleToolWindow()
+            StockerMarketType.Crypto to StockerSimpleToolWindow(),
+            StockerMarketType.QH to StockerSimpleToolWindow()
         )
         myApplication = StockerApp()
     }

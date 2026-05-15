@@ -81,13 +81,13 @@ class StockerApp {
             val hkStocksQuotes = fetchQuotesIfActive(StockerMarketType.HKStocks, quoteProvider, setting.hkStocksList) ?: return@Runnable
             val usStocksQuotes = fetchQuotesIfActive(StockerMarketType.USStocks, quoteProvider, setting.usStocksList) ?: return@Runnable
             val cryptoQuotes = fetchQuotesIfActive(StockerMarketType.Crypto, cryptoQuoteProvider, setting.cryptoList) ?: return@Runnable
-            val qhQuotes = fetchQuotesIfActive(StockerMarketType.QH, cryptoQuoteProvider, setting.qhList) ?: return@Runnable
+            val qhQuotes = fetchQuotesIfActive(StockerMarketType.QH, quoteProvider, setting.qhList) ?: return@Runnable
 
             val aShareIndices = fetchQuotesIfActive(StockerMarketType.AShare, quoteProvider, StockerMarketIndex.CN.codes) ?: return@Runnable
             val hkStocksIndices = fetchQuotesIfActive(StockerMarketType.HKStocks, quoteProvider, StockerMarketIndex.HK.codes) ?: return@Runnable
             val usStocksIndices = fetchQuotesIfActive(StockerMarketType.USStocks, quoteProvider, StockerMarketIndex.US.codes) ?: return@Runnable
             val cryptoIndices = fetchQuotesIfActive(StockerMarketType.Crypto, cryptoQuoteProvider, StockerMarketIndex.Crypto.codes) ?: return@Runnable
-            val qhIndices = fetchQuotesIfActive(StockerMarketType.QH, cryptoQuoteProvider, StockerMarketIndex.QH.codes) ?: return@Runnable
+            val qhIndices = fetchQuotesIfActive(StockerMarketType.QH, quoteProvider, StockerMarketIndex.QH.codes) ?: return@Runnable
 
             if (!shouldContinueRefresh()) {
                 return@Runnable

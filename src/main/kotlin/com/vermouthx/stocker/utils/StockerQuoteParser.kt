@@ -163,6 +163,10 @@ object StockerQuoteParser {
         return responseText.split("\n").asSequence().filter { text -> text.isNotEmpty() }.map { text ->
             val code = when (marketType) {
                 StockerMarketType.AShare -> text.subSequence(2, text.indexOfFirst { c -> c == '=' })
+                StockerMarketType.HKStocks, StockerMarketType.USStocks -> text.subSequence(4,
+                    text.indexOfFirst { c -> c == '=' })
+
+                StockerMarketType.Crypto -> ""
                 StockerMarketType.QH -> ""
             }
             "$code~${text.subSequence(text.indexOfFirst { c -> c == '"' } + 1, text.indexOfLast { c -> c == '"' })}"
@@ -183,6 +187,16 @@ object StockerQuoteParser {
                     val datetime = LocalDateTime.parse(textArray[31], sourceFormatter)
                     targetFormatter.format(datetime)
                 }
+
+                StockerMarketType.HKStocks -> {
+                    val sourceFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+                    val targetFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    val datetime = LocalDateTime.parse(textArray[31], sourceFormatter)
+                    targetFormatter.format(datetime)
+                }
+
+                StockerMarketType.USStocks -> textArray[31]
+                StockerMarketType.Crypto -> ""
                 StockerMarketType.QH -> ""
             }
             StockerQuote(

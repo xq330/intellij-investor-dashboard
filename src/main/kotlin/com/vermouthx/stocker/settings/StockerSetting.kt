@@ -95,10 +95,28 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
             myState.aShareList = value
         }
 
-    var qhList: MutableList<String>
-        get() = myState.qHList
+    var hkStocksList: MutableList<String>
+        get() = myState.hkStocksList
         set(value) {
-            myState.qHList = value
+            myState.hkStocksList = value
+        }
+
+    var usStocksList: MutableList<String>
+        get() = myState.usStocksList
+        set(value) {
+            myState.usStocksList = value
+        }
+
+    var cryptoList: MutableList<String>
+        get() = myState.cryptoList
+        set(value) {
+            myState.cryptoList = value
+        }
+
+    var qhList: MutableList<String>
+        get() = myState.qhList
+        set(value) {
+            myState.qhList = value
         }
 
     var customStockNames: MutableMap<String, String>

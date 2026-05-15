@@ -196,6 +196,21 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
         return visibleTableColumns.contains(column.name)
     }
 
+    var visibleMarketTypes: List<String>
+        get() {
+            val stored = myState.visibleMarketTypes
+            if (stored.isEmpty()) return StockerMarketType.entries.map { it.title }
+            return stored
+        }
+        set(value) {
+            myState.visibleMarketTypes = value.toMutableList()
+            log.info("Stocker visible market types updated: $value")
+        }
+
+    fun isMarketTypeVisible(marketType: StockerMarketType): Boolean {
+        return visibleMarketTypes.contains(marketType.title)
+    }
+
     fun containsCode(code: String): Boolean {
         return aShareList.contains(code) ||
                 qhList.contains(code)

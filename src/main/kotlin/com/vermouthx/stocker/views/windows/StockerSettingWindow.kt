@@ -1,12 +1,15 @@
 package com.vermouthx.stocker.views.windows
 
 import com.intellij.openapi.options.BoundConfigurable
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.wm.ToolWindowManager
 import com.intellij.ui.JBColor
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
 import com.vermouthx.stocker.StockerAppManager
 import com.vermouthx.stocker.StockerBundle
+import com.vermouthx.stocker.enums.StockerMarketType
 import com.vermouthx.stocker.enums.StockerQuoteColorPattern
 import com.vermouthx.stocker.enums.StockerQuoteProvider
 import com.vermouthx.stocker.enums.StockerTableColumn
@@ -36,6 +39,12 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
     private var showCostPrice: Boolean = setting.isTableColumnVisible(StockerTableColumn.COST_PRICE)
     private var showHoldings: Boolean = setting.isTableColumnVisible(StockerTableColumn.HOLDINGS)
     private var showNetProfit: Boolean = setting.isTableColumnVisible(StockerTableColumn.NET_PROFIT)
+    
+    private var showAShare: Boolean = setting.isMarketTypeVisible(StockerMarketType.AShare)
+    private var showHKStocks: Boolean = setting.isMarketTypeVisible(StockerMarketType.HKStocks)
+    private var showUSStocks: Boolean = setting.isMarketTypeVisible(StockerMarketType.USStocks)
+    private var showCrypto: Boolean = setting.isMarketTypeVisible(StockerMarketType.Crypto)
+    private var showQH: Boolean = setting.isMarketTypeVisible(StockerMarketType.QH)
 
     private var symbolCheckBox: JCheckBox? = null
     private var nameCheckBox: JCheckBox? = null
@@ -50,6 +59,13 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
     private var holdingsCheckBox: JCheckBox? = null
     private var netProfitCheckBox: JCheckBox? = null
     private var columnWarningLabel: JLabel? = null
+    
+    private var aShareCheckBox: JCheckBox? = null
+    private var hkStocksCheckBox: JCheckBox? = null
+    private var usStocksCheckBox: JCheckBox? = null
+    private var cryptoCheckBox: JCheckBox? = null
+    private var qhCheckBox: JCheckBox? = null
+    private var marketWarningLabel: JLabel? = null
 
     companion object {
         private val LANGUAGE_CODES = listOf("", "en", "zh_CN")
@@ -248,9 +264,69 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
                 }
             }
 
+            group(StockerBundle.message("settings.group.market.display")) {
+                row {
+                    label(StockerBundle.message("settings.market.types"))
+                        .widthGroup("labels")
+                }.layout(RowLayout.LABEL_ALIGNED)
+
+                indent {
+                    row {
+                        aShareCheckBox = checkBox("CN (A股)")
+                            .bindSelected(::showAShare.toMutableProperty())
+                            .applyToComponent {
+                                addItemListener { handleMarketToggle(this) }
+                            }
+                            .component
+                    }
+                    row {
+                        hkStocksCheckBox = checkBox("HK (港股)")
+                            .bindSelected(::showHKStocks.toMutableProperty())
+                            .applyToComponent {
+                                addItemListener { handleMarketToggle(this) }
+                            }
+                            .component
+                    }
+                    row {
+                        usStocksCheckBox = checkBox("US (美股)")
+                            .bindSelected(::showUSStocks.toMutableProperty())
+                            .applyToComponent {
+                                addItemListener { handleMarketToggle(this) }
+                            }
+                            .component
+                    }
+                    row {
+                        cryptoCheckBox = checkBox("Crypto (加密货币)")
+                            .bindSelected(::showCrypto.toMutableProperty())
+                            .applyToComponent {
+                                addItemListener { handleMarketToggle(this) }
+                            }
+                            .component
+                    }
+                    row {
+                        qhCheckBox = checkBox("QH (期货)")
+                            .bindSelected(::showQH.toMutableProperty())
+                            .applyToComponent {
+                                addItemListener { handleMarketToggle(this) }
+                            }
+                            .component
+                    }
+                    row {
+                        marketWarningLabel = label(StockerBundle.message("settings.market.types.warning"))
+                            .applyToComponent {
+                                foreground = JBColor.RED
+                                isVisible = false
+                            }
+                            .component
+                    }
+                }
+            }
+
             onApply {
                 val visibleColumns = buildVisibleColumns()
+                val visibleMarkets = buildVisibleMarkets()
                 val columnsModified = visibleColumns != setting.visibleTableColumns
+                val marketsModified = visibleMarkets != setting.visibleMarketTypes
                 val colorPatternModified = colorPattern != setting.quoteColorPattern
                 val providerModified = selectedProvider != setting.quoteProvider
                 val cryptoProviderModified = selectedCryptoProvider != setting.cryptoQuoteProvider
@@ -263,6 +339,7 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
                 setting.displayNameWithPinyin = displayNameWithPinyin
                 setting.visibleTableColumns = visibleColumns
                 setting.languageOverride = languageOverride
+                setting.visibleMarketTypes = visibleMarkets
 
                 if (columnsModified || languageModified) {
                     StockerTableView.refreshAllColumnVisibility()
@@ -270,7 +347,7 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
                 if (colorPatternModified) {
                     StockerTableView.refreshAllColorPatterns()
                 }
-                if (providerModified || cryptoProviderModified || pinyinModified || languageModified) {
+                if (providerModified || cryptoProviderModified || pinyinModified || languageModified || marketsModified) {
                     refreshAllWindows()
                 }
             }
@@ -280,7 +357,8 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
                         colorPattern != setting.quoteColorPattern ||
                         displayNameWithPinyin != setting.displayNameWithPinyin ||
                         languageOverride != setting.languageOverride ||
-                        buildVisibleColumns() != setting.visibleTableColumns
+                        buildVisibleColumns() != setting.visibleTableColumns ||
+                        buildVisibleMarkets() != setting.visibleMarketTypes
             }
             onReset {
                 selectedProvider = setting.quoteProvider
@@ -300,7 +378,13 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
                 showCostPrice = setting.isTableColumnVisible(StockerTableColumn.COST_PRICE)
                 showHoldings = setting.isTableColumnVisible(StockerTableColumn.HOLDINGS)
                 showNetProfit = setting.isTableColumnVisible(StockerTableColumn.NET_PROFIT)
+                showAShare = setting.isMarketTypeVisible(StockerMarketType.AShare)
+                showHKStocks = setting.isMarketTypeVisible(StockerMarketType.HKStocks)
+                showUSStocks = setting.isMarketTypeVisible(StockerMarketType.USStocks)
+                showCrypto = setting.isMarketTypeVisible(StockerMarketType.Crypto)
+                showQH = setting.isMarketTypeVisible(StockerMarketType.QH)
                 columnWarningLabel?.isVisible = false
+                marketWarningLabel?.isVisible = false
             }
         }
     }
@@ -347,9 +431,53 @@ class StockerSettingWindow : BoundConfigurable(StockerBundle.message("plugin.nam
         }
     }
 
+    private fun buildVisibleMarkets(): MutableList<String> {
+        val visibleMarkets = mutableListOf<String>()
+        if (showAShare) visibleMarkets.add(StockerMarketType.AShare.title)
+        if (showHKStocks) visibleMarkets.add(StockerMarketType.HKStocks.title)
+        if (showUSStocks) visibleMarkets.add(StockerMarketType.USStocks.title)
+        if (showCrypto) visibleMarkets.add(StockerMarketType.Crypto.title)
+        if (showQH) visibleMarkets.add(StockerMarketType.QH.title)
+        return visibleMarkets
+    }
+
+    private fun handleMarketToggle(changed: JCheckBox) {
+        val allCheckboxes = listOfNotNull(
+            aShareCheckBox,
+            hkStocksCheckBox,
+            usStocksCheckBox,
+            cryptoCheckBox,
+            qhCheckBox
+        )
+        val selectedCount = allCheckboxes.count { it.isSelected }
+
+        if (selectedCount == 0) {
+            changed.isSelected = true
+            marketWarningLabel?.isVisible = true
+        } else {
+            marketWarningLabel?.isVisible = false
+        }
+    }
+
     private fun refreshAllWindows() {
         StockerAppManager.getAllApplications().forEach { app ->
             app.shutdownThenClear()
+        }
+        
+        // Refresh tool windows for all open projects
+        ProjectManager.getInstance().openProjects.forEach { project ->
+            ToolWindowManager.getInstance(project).getToolWindow("Stocker")?.let { toolWindow ->
+                // Remove all existing contents
+                toolWindow.contentManager.removeAllContents(true)
+                // Recreate content using a new factory instance
+                val factory = StockerToolWindow()
+                factory.init(toolWindow)  // Need to call init first to initialize lateinit properties
+                factory.createToolWindowContent(project, toolWindow)
+            }
+        }
+        
+        // Restart all applications
+        StockerAppManager.getAllApplications().forEach { app ->
             app.schedule()
         }
     }

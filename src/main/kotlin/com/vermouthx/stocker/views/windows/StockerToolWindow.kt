@@ -42,6 +42,7 @@ class StockerToolWindow : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val contentManager = toolWindow.contentManager
         val contentFactory = ContentFactory.getInstance()
+        val setting = com.vermouthx.stocker.settings.StockerSetting.instance
         
         // Create a disposable for cleanup when tool window is closed
         val disposable = Disposer.newDisposable("StockerToolWindow")
@@ -49,30 +50,46 @@ class StockerToolWindow : ToolWindowFactory {
         
         val allContent = contentFactory.createContent(allView.component, "ALL", false)
         contentManager.addContent(allContent)
-        val qhContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.QH]?.component,
-            StockerMarketType.QH.title,
-            false
-        )
-        contentManager.addContent(qhContent)
-        val aShareContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.AShare]?.component, StockerMarketType.AShare.title, false
-        )
-        contentManager.addContent(aShareContent)
-        val hkStocksContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.HKStocks]?.component, StockerMarketType.HKStocks.title, false
-        )
-        contentManager.addContent(hkStocksContent)
-        val usStocksContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.USStocks]?.component, StockerMarketType.USStocks.title, false
-        )
-        contentManager.addContent(usStocksContent)
-        val cryptoContent = contentFactory.createContent(
-            tabViewMap[StockerMarketType.Crypto]?.component,
-            StockerMarketType.Crypto.title,
-            false
-        )
-        contentManager.addContent(cryptoContent)
+        
+        if (setting.isMarketTypeVisible(StockerMarketType.QH)) {
+            val qhContent = contentFactory.createContent(
+                tabViewMap[StockerMarketType.QH]?.component,
+                StockerMarketType.QH.title,
+                false
+            )
+            contentManager.addContent(qhContent)
+        }
+        
+        if (setting.isMarketTypeVisible(StockerMarketType.AShare)) {
+            val aShareContent = contentFactory.createContent(
+                tabViewMap[StockerMarketType.AShare]?.component, StockerMarketType.AShare.title, false
+            )
+            contentManager.addContent(aShareContent)
+        }
+        
+        if (setting.isMarketTypeVisible(StockerMarketType.HKStocks)) {
+            val hkStocksContent = contentFactory.createContent(
+                tabViewMap[StockerMarketType.HKStocks]?.component, StockerMarketType.HKStocks.title, false
+            )
+            contentManager.addContent(hkStocksContent)
+        }
+        
+        if (setting.isMarketTypeVisible(StockerMarketType.USStocks)) {
+            val usStocksContent = contentFactory.createContent(
+                tabViewMap[StockerMarketType.USStocks]?.component, StockerMarketType.USStocks.title, false
+            )
+            contentManager.addContent(usStocksContent)
+        }
+        
+        if (setting.isMarketTypeVisible(StockerMarketType.Crypto)) {
+            val cryptoContent = contentFactory.createContent(
+                tabViewMap[StockerMarketType.Crypto]?.component,
+                StockerMarketType.Crypto.title,
+                false
+            )
+            contentManager.addContent(cryptoContent)
+        }
+        
         this.subscribeMessage()
         
         // Register cleanup when disposable is disposed
@@ -106,8 +123,10 @@ class StockerToolWindow : ToolWindowFactory {
             subscribe(STOCK_ALL_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(allView.tableView))
         })
         
+        val setting = com.vermouthx.stocker.settings.StockerSetting.instance
         tabViewMap.forEach { (market, myTableView) ->
-            when (market) {
+            if (setting.isMarketTypeVisible(market)) {
+                when (market) {
                 StockerMarketType.AShare -> {
                     messageBusConnections.add(messageBus.connect().apply {
                         subscribe(STOCK_CN_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(myTableView.tableView))
@@ -167,6 +186,7 @@ class StockerToolWindow : ToolWindowFactory {
                         subscribe(QH_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(myTableView.tableView))
                     })
                 }
+            }
             }
         }
     }

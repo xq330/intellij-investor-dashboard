@@ -13,6 +13,7 @@ class StockerSettingState {
     var displayNameWithPinyin: Boolean = false
     var languageOverride: String = "" // Empty string means follow system language
     var visibleTableColumns: MutableList<String> = mutableListOf() // Empty list will be populated with defaults on first access
+    var visibleMarketTypes: MutableList<String> = mutableListOf("CN", "HK", "US", "Crypto", "QH") // Default: show all market types
     var aShareList: MutableList<String> = mutableListOf()
     var hkStocksList: MutableList<String> = mutableListOf()
     var usStocksList: MutableList<String> = mutableListOf()

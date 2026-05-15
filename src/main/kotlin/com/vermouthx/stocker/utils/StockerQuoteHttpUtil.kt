@@ -54,6 +54,7 @@ object StockerQuoteHttpUtil {
                     codes.joinToString(",") { code ->
                         "$prefix${code.lowercase()}"
                     }
+                }
             }
         }
 

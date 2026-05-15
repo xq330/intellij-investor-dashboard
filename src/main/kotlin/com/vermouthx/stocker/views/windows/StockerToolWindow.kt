@@ -66,6 +66,12 @@ class StockerToolWindow : ToolWindowFactory {
             false
         )
         contentManager.addContent(cryptoContent)
+        val qhContent = contentFactory.createContent(
+            tabViewMap[StockerMarketType.QH]?.component,
+            StockerMarketType.QH.title,
+            false
+        )
+        contentManager.addContent(qhContent)
         this.subscribeMessage()
         
         // Register cleanup when disposable is disposed
@@ -146,6 +152,18 @@ class StockerToolWindow : ToolWindowFactory {
                     })
                     messageBusConnections.add(messageBus.connect().apply {
                         subscribe(STOCK_CRYPTO_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(myTableView.tableView))
+                    })
+                }
+
+                StockerMarketType.QH -> {
+                    messageBusConnections.add(messageBus.connect().apply {
+                        subscribe(STOCK_QH_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(myTableView.tableView))
+                    })
+                    messageBusConnections.add(messageBus.connect().apply {
+                        subscribe(STOCK_QH_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(myTableView.tableView))
+                    })
+                    messageBusConnections.add(messageBus.connect().apply {
+                        subscribe(STOCK_QH_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(myTableView.tableView))
                     })
                 }
             }

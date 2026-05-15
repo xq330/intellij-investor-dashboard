@@ -4,6 +4,10 @@ Stocker
 </h1>
 
 <p align="center">
+基于intellij-investor-dashboard-1.20.1,添加期货行情,添加可选市场菜单<br>
+<img width="399" height="302" alt="image" src="https://github.com/user-attachments/assets/7a933103-fd6f-4c46-bf2a-08fdbdcf8bc2" />
+<img width="677" height="257" alt="image" src="https://github.com/user-attachments/assets/92a24f11-78c2-404d-be9d-ee22ad64a4bf" />
+   
 Stocker is a JetBrains IDE extension dashboard for investors to track real-time stock market conditions.
 </p>
 <p align="center">

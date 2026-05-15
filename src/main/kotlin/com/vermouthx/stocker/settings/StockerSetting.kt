@@ -218,6 +218,25 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
                     aShareList.remove(code)
                 }
             }
+
+            StockerMarketType.HKStocks -> {
+                synchronized(hkStocksList) {
+                    hkStocksList.remove(code)
+                }
+            }
+
+            StockerMarketType.USStocks -> {
+                synchronized(usStocksList) {
+                    usStocksList.remove(code)
+                }
+            }
+
+            StockerMarketType.Crypto -> {
+                synchronized(cryptoList) {
+                    cryptoList.remove(code)
+                }
+            }
+
             StockerMarketType.QH -> {
                 synchronized(qhList) {
                     qhList.remove(code)

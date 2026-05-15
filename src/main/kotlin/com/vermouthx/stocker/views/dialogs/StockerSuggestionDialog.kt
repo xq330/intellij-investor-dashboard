@@ -45,7 +45,7 @@ class StockerSuggestionDialog(val project: Project?) : DialogWrapper(project) {
     private var searchMode: SearchMode = SearchMode.STOCKS
 
     private enum class SearchMode(val displayName: String) {
-        STOCKS("Stocks (CN/HK/US)"),
+        STOCKS("Stocks (CN/HK/US/QH)"),
         CRYPTO("Crypto")
     }
 
@@ -177,7 +177,7 @@ class StockerSuggestionDialog(val project: Project?) : DialogWrapper(project) {
             }.withBorder(BorderFactory.createEmptyBorder(16, 8, 8, 8))
         } else if (suggestions.isEmpty()) {
             val message = when (searchMode) {
-                SearchMode.STOCKS -> "Type to search for stocks (CN/HK/US)..."
+                SearchMode.STOCKS -> "Type to search for stocks (CN/HK/US/QH)..."
                 SearchMode.CRYPTO -> "Type to search for crypto..."
             }
             panel {

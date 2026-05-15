@@ -9,101 +9,50 @@ import org.apache.http.client.methods.HttpGet
 import org.apache.http.util.EntityUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 
 object StockerSuggestHttpUtil {
-    // 上海期货交易所的期货品种和代码
-    val shfeFutures = mapOf(
-        Pair("铜", "CU"),
-        Pair("铝", "AL"),
-        Pair("锌", "ZN"),
-        Pair("铅", "PB"),
-        Pair("镍", "NI"),
-        Pair("锡", "SN"),
-        Pair("黄金", "AU"),
-        Pair("白银", "AG"),
-        Pair("螺纹钢", "RB"),
-        Pair("线材", "WR"),
-        Pair("热卷", "HC"),
-        Pair("不锈钢", "SS"),
-        Pair("沥青", "BU"),
-        Pair("纸浆", "SP"),
-        Pair("燃料油", "FU"),
-        Pair("氧化铝", "AO"),
-        Pair("天然橡胶", "RU")
-    )
-
-    // 上期能源的期货品种和代码
-    var shIneFutures = mapOf(
-        Pair("原油", "SC"),
-        Pair("集运", "EC"),
-        Pair("国际铜", "BC"),
-        Pair("低硫燃油", "LU"),
-        Pair("20号胶", "NR"),
-        Pair("液化天然气", "NG")
-    )
-
-    // 郑州商品交易所的期货品种和代码
-    val czceFutures = mapOf(
-        Pair("棉花", "CF"),
-        Pair("白糖", "SR"),
-        Pair("PTA", "TA"),
-        Pair("甲醇", "MA"),
-        Pair("玻璃", "FG"),
-        Pair("纯碱", "SA"),
-        Pair("苹果", "AP"),
-        Pair("红枣", "CJ"),
-        Pair("尿素", "UR"),
-        Pair("菜籽油", "OI"),
-        Pair("菜籽粕", "RM"),
-        Pair("动力煤", "ZC"),
-        Pair("硅铁", "SF"),
-        Pair("锰硅", "SM"),
-        Pair("鸡蛋", "JD"),
-        Pair("花生", "PK"),
-        Pair("棉纱", "CY"),
-        Pair("短纤", "PF"),
-        Pair("涤纶", "TL"),
-        Pair("烧碱", "CL")
-    )
-
-    // 大连商品交易所的期货品种和代码
-    val dceFutures = mapOf(
-        Pair("玉米", "C"),
-        Pair("玉米淀粉", "CS"),
-        Pair("豆一", "A"),
-        Pair("豆二", "B"),
-        Pair("豆粕", "M"),
-        Pair("豆油", "Y"),
-        Pair("棕榈油", "P"),
-        Pair("聚乙烯", "L"),
-        Pair("聚氯乙烯", "V"),
-        Pair("聚丙烯", "PP"),
-        Pair("铁矿石", "I"),
-        Pair("焦煤", "JM"),
-        Pair("焦炭", "J"),
-        Pair("乙二醇", "EG"),
-        Pair("LPG", "PG"),
-        Pair("生猪", "LH"),
-        Pair("粳米", "RR"),
-        Pair("苯乙烯", "EB")
-    )
-
-    // 中国金融期货交易所的期货品种和代码
-    val cffexFutures = mapOf(
-        Pair("沪深300", "IF"),
-        Pair("中证500", "IC"),
-        Pair("上证50", "IH"),
-        Pair("十债", "T"),
-        Pair("五债", "TF"),
-        Pair("二债", "TS"),
-        Pair("中证1000", "IM")
-    )
-
-    // 汇总所有期货品种和代码
-    private var futures: Map<String,String> = shfeFutures + shIneFutures + czceFutures + dceFutures
-
     private val log = Logger.getInstance(javaClass)
     private val httpClientPool = StockerHttpClientPool(log)
+    
+    // 从配置文件加载期货品种数据
+    private val futures: Map<String, String> by lazy {
+        loadFuturesFromConfig()
+    }
+    
+    /**
+     * 从 resources/futures.json 加载期货品种配置
+     */
+    private fun loadFuturesFromConfig(): Map<String, String> {
+        return try {
+            val inputStream = javaClass.getResourceAsStream("/futures.json")
+                ?: throw IllegalStateException("Cannot find futures.json in resources")
+            
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            val gson = Gson()
+            val jsonObject = gson.fromJson(jsonString, JsonObject::class.java)
+            
+            val allFutures = mutableMapOf<String, String>()
+            
+            // 遍历所有交易所配置
+            for ((exchangeKey, exchangeValue) in jsonObject.entrySet()) {
+                val exchangeObj = exchangeValue.asJsonObject
+                val futuresObj = exchangeObj.getAsJsonObject("futures")
+                
+                // 提取该交易所的所有期货品种
+                for ((name, code) in futuresObj.entrySet()) {
+                    allFutures[name] = code.asString
+                }
+            }
+            
+            log.info("Loaded ${allFutures.size} futures from configuration")
+            allFutures
+        } catch (e: Exception) {
+            log.error("Failed to load futures configuration, using empty map", e)
+            emptyMap()
+        }
+    }
 
     fun closeConnections() {
         httpClientPool.close()

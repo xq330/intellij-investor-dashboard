@@ -2,7 +2,8 @@
     <id>com.vermouthx.intellij-investor-dashboard</id>
     <name>Stocker</name>
     <vendor email="developer@nszihan.com" url="https://nszihan.com">Zihan Ma</vendor>
-    <idea-version since-build="233"/>
+    <idea-version since-build="241"/>
+    <resource-bundle>messages.StockerBundle</resource-bundle>
     <depends>com.intellij.modules.platform</depends>
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.vermouthx.stocker.settings.StockerSetting"/>
@@ -14,28 +15,46 @@
                                  id="com.vermouthx.stocker.views.windows.StockerSettingWindow"
                                  instance="com.vermouthx.stocker.views.windows.StockerSettingWindow"/>
     </extensions>
+    <projectListeners>
+        <listener class="com.vermouthx.stocker.StockerAppManager$StockerProjectManagerListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </projectListeners>
     <actions>
         <group id="com.vermouthx.stocker.actions.StockerActionGroup" text="Stocker" popup="true" icon="/icons/logo.png">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action class="com.vermouthx.stocker.actions.StockerStockSearchAction"
+                    id="com.vermouthx.stocker.actions.StockerStockSearchAction"
+                    text="%action.add.favorite.stocks"
+                    description="%action.add.favorite.stocks.description"
+                    icon="AllIcons.General.Add">
+            </action>
             <action class="com.vermouthx.stocker.actions.StockerRefreshAction"
                     id="com.vermouthx.stocker.actions.StockerRefreshAction"
-                    text="Refresh" description="Refresh" icon="AllIcons.Actions.Refresh">
+                    text="%action.refresh"
+                    description="%action.refresh.description"
+                    icon="AllIcons.Actions.Refresh">
             </action>
             <action class="com.vermouthx.stocker.actions.StockerStopAction"
                     id="com.vermouthx.stocker.actions.StockerStopAction"
-                    text="Stop Refresh" description="Stop refresh" icon="AllIcons.Actions.StopRefresh"
-            />
-            <action class="com.vermouthx.stocker.actions.StockerStockSearchAction"
-                    id="com.vermouthx.stocker.actions.StockerStockSearchAction"
-                    text="Add Favorite Stocks" description="Search and add stock symbols" icon="AllIcons.General.Add">
+                    text="%action.stop.refresh"
+                    description="%action.stop.refresh.description"
+                    icon="AllIcons.Actions.StopRefresh">
             </action>
             <action class="com.vermouthx.stocker.actions.StockerStockManageAction"
                     id="com.vermouthx.stocker.actions.StockerStockManageAction"
-                    text="Manage Favorite Stocks" description="Manage stock symbols" icon="AllIcons.Actions.ListFiles">
+                    text="%action.manage.favorite.stocks"
+                    description="%action.manage.favorite.stocks.description"
+                    icon="AllIcons.Actions.Edit">
+            </action>
+            <action class="com.vermouthx.stocker.actions.StockerSettingAction"
+                    id="com.vermouthx.stocker.actions.StockerSettingAction"
+                    text="%action.settings"
+                    description="%action.settings.description"
+                    icon="AllIcons.General.Settings">
             </action>
             <action class="com.vermouthx.stocker.actions.StockerResetAction"
                     id="com.vermouthx.stocker.actions.StockerResetAction"
-                    text="Remove All Favorite Stocks" description="Remove all stock symbols"
+                    text="%action.remove.all.favorite.stocks"
+                    description="%action.remove.all.favorite.stocks.description"
                     icon="AllIcons.General.Reset">
             </action>
         </group>

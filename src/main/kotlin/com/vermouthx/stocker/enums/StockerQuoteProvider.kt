@@ -1,13 +1,15 @@
 package com.vermouthx.stocker.enums
 
+import com.vermouthx.stocker.StockerBundle
+
 enum class StockerQuoteProvider(
-    val title: String, val host: String, val suggestHost: String, val providerPrefixMap: Map<StockerMarketType, String>
+    val titleKey: String, val host: String, val suggestHost: String, val providerPrefixMap: Map<StockerMarketType, String>
 ) {
     /**
      * Sina API
      */
     SINA(
-        title = "Sina",
+        titleKey = "provider.sina",
         host = "https://hq.sinajs.cn/list=",
         suggestHost = "https://suggest3.sinajs.cn/suggest/key=",
         providerPrefixMap = mapOf(
@@ -20,7 +22,7 @@ enum class StockerQuoteProvider(
      * Tencent API
      */
     TENCENT(
-        title = "Tencent",
+        titleKey = "provider.tencent",
         host = "https://qt.gtimg.cn/q=",
         suggestHost = "https://smartbox.gtimg.cn/s3/?v=2&t=all&c=1&q=",
         providerPrefixMap = mapOf(
@@ -28,11 +30,16 @@ enum class StockerQuoteProvider(
         )
     );
 
-    fun fromTitle(title: String): StockerQuoteProvider {
-        return when (title) {
-            SINA.title -> SINA
-            TENCENT.title -> TENCENT
-            else -> SINA
+    val title: String
+        get() = StockerBundle.message(titleKey)
+
+    companion object {
+        fun fromTitle(title: String): StockerQuoteProvider {
+            return when (title) {
+                SINA.title -> SINA
+                TENCENT.title -> TENCENT
+                else -> SINA
+            }
         }
     }
 

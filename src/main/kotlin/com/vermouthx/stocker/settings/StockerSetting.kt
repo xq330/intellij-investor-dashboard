@@ -8,6 +8,8 @@ import com.intellij.openapi.diagnostic.Logger
 import com.vermouthx.stocker.enums.StockerMarketType
 import com.vermouthx.stocker.enums.StockerQuoteColorPattern
 import com.vermouthx.stocker.enums.StockerQuoteProvider
+import com.vermouthx.stocker.enums.StockerTableColumn
+import com.vermouthx.stocker.utils.StockerPinyinUtil
 
 @State(name = "Stocker", storages = [Storage("stocker-config.xml")])
 class StockerSetting : PersistentStateComponent<StockerSettingState> {
@@ -31,7 +33,14 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
         get() = myState.quoteProvider
         set(value) {
             myState.quoteProvider = value
-            log.info("Stocker quote provider switched to ${value.title}")
+            log.info("Stocker stock quote provider switched to ${value.title}")
+        }
+
+    var cryptoQuoteProvider: StockerQuoteProvider
+        get() = myState.cryptoQuoteProvider
+        set(value) {
+            myState.cryptoQuoteProvider = value
+            log.info("Stocker crypto quote provider switched to ${value.title}")
         }
 
     var quoteColorPattern: StockerQuoteColorPattern
@@ -39,6 +48,38 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
         set(value) {
             myState.quoteColorPattern = value
             log.info("Stocker quote color pattern switched to ${value.title}")
+        }
+
+    var displayNameWithPinyin: Boolean
+        get() = myState.displayNameWithPinyin
+        set(value) {
+            myState.displayNameWithPinyin = value
+            log.info("Stocker display name with pinyin set to $value")
+        }
+
+    var languageOverride: String
+        get() = myState.languageOverride
+        set(value) {
+            myState.languageOverride = value
+            log.info("Stocker language override set to $value")
+        }
+
+    var visibleTableColumns: List<String>
+        get() {
+            val stored = myState.visibleTableColumns
+            if (stored.isEmpty()) return StockerTableColumn.defaultVisibleNames()
+            if (stored.all { name -> StockerTableColumn.fromName(name) != null }) return stored
+            val migrated = stored.mapNotNull { StockerTableColumn.migrateLocalizedTitle(it) }
+            if (migrated.isNotEmpty()) {
+                myState.visibleTableColumns = migrated.toMutableList()
+                log.info("Migrated visibleTableColumns from localized titles to enum names: $migrated")
+                return migrated
+            }
+            return StockerTableColumn.defaultVisibleNames()
+        }
+        set(value) {
+            myState.visibleTableColumns = value.toMutableList()
+            log.info("Stocker visible table columns updated: $value")
         }
 
     var refreshInterval: Long
@@ -60,8 +101,82 @@ class StockerSetting : PersistentStateComponent<StockerSettingState> {
             myState.qHList = value
         }
 
+    var customStockNames: MutableMap<String, String>
+        get() = myState.customStockNames
+        set(value) {
+            myState.customStockNames = value
+        }
+
+    var stockCostPrices: MutableMap<String, Double>
+        get() = myState.stockCostPrices
+        set(value) {
+            myState.stockCostPrices = value
+        }
+
+    var stockHoldings: MutableMap<String, Int>
+        get() = myState.stockHoldings
+        set(value) {
+            myState.stockHoldings = value
+        }
+
     val allStockListSize: Int
         get() = aShareList.size + qhList.size
+
+    fun setCustomName(code: String, customName: String) {
+        customStockNames[code] = customName
+        log.info("Custom name set for $code: $customName")
+    }
+
+    fun getCustomName(code: String): String? {
+        return customStockNames[code]
+    }
+
+    fun removeCustomName(code: String) {
+        customStockNames.remove(code)
+        log.info("Custom name removed for $code")
+    }
+
+    fun setCostPrice(code: String, costPrice: Double) {
+        val rounded = Math.round(costPrice * 1000.0) / 1000.0
+        stockCostPrices[code] = rounded
+        log.info("Cost price set for $code: $rounded")
+    }
+
+    fun getCostPrice(code: String): Double? {
+        return stockCostPrices[code]
+    }
+
+    fun removeCostPrice(code: String) {
+        stockCostPrices.remove(code)
+        log.info("Cost price removed for $code")
+    }
+
+    fun setHoldings(code: String, holdings: Int) {
+        stockHoldings[code] = holdings
+        log.info("Holdings set for $code: $holdings")
+    }
+
+    fun getHoldings(code: String): Int? {
+        return stockHoldings[code]
+    }
+
+    fun removeHoldings(code: String) {
+        stockHoldings.remove(code)
+        log.info("Holdings removed for $code")
+    }
+
+    fun getDisplayName(code: String, originalName: String): String {
+        // Priority: Custom name > Pinyin mode > Original name
+        customStockNames[code]?.let { return it }
+        if (displayNameWithPinyin) {
+            return StockerPinyinUtil.toPinyin(originalName)
+        }
+        return originalName
+    }
+
+    fun isTableColumnVisible(column: StockerTableColumn): Boolean {
+        return visibleTableColumns.contains(column.name)
+    }
 
     fun containsCode(code: String): Boolean {
         return aShareList.contains(code) ||

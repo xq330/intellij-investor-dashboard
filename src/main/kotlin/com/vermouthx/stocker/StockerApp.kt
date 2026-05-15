@@ -117,6 +117,11 @@ class StockerApp {
             if (setting.cryptoList.isNotEmpty()) {
                 cryptoPublisher.syncQuotes(cryptoQuotes, setting.cryptoList.size)
             }
+
+            val qhPublisher = messageBus.syncPublisher(QH_QUOTE_UPDATE_TOPIC)
+            if (setting.qhList.isNotEmpty()) {
+                qhPublisher.syncQuotes(qhQuotes, setting.qhList.size)
+            }
             cryptoPublisher.syncIndices(cryptoIndices)
 
             // Publish to "all" topic

@@ -157,13 +157,13 @@ class StockerToolWindow : ToolWindowFactory {
 
                 StockerMarketType.QH -> {
                     messageBusConnections.add(messageBus.connect().apply {
-                        subscribe(STOCK_QH_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(myTableView.tableView))
+                        subscribe(QH_QUOTE_UPDATE_TOPIC, StockerQuoteUpdateListener(myTableView.tableView))
                     })
                     messageBusConnections.add(messageBus.connect().apply {
-                        subscribe(STOCK_QH_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(myTableView.tableView))
+                        subscribe(QH_QUOTE_DELETE_TOPIC, StockerQuoteDeleteListener(myTableView.tableView))
                     })
                     messageBusConnections.add(messageBus.connect().apply {
-                        subscribe(STOCK_QH_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(myTableView.tableView))
+                        subscribe(QH_QUOTE_RELOAD_TOPIC, StockerQuoteReloadListener(myTableView.tableView))
                     })
                 }
             }

@@ -133,24 +133,21 @@ object StockerQuoteParser {
                 }
 
                 StockerMarketType.QH -> {
-                    // Sina futures format: nf_CODE, name, open, high, low, close, current, ...
-                    // Example: var hq_str_nf_C0="玉米连续,2456,2456,2473,2441,2460,2460,..."
-                    val code = textArray[0].substring(3).uppercase()
-                    val name = textArray[1]
-                    val opening = textArray[2].toDoubleOrNull() ?: 0.0
-                    val high = textArray[3].toDoubleOrNull() ?: 0.0
-                    val low = textArray[4].toDoubleOrNull() ?: 0.0
-                    val close = textArray[5].toDoubleOrNull() ?: 0.0
-                    val current = textArray[6].toDoubleOrNull() ?: 0.0
-                    val change = if (close != 0.0) (current - close).twoDigits() else 0.0
-                    val percentage = if (close != 0.0) ((current - close) / close * 100).twoDigits() else 0.0
-                    val updateAt = "${textArray[31]} ${textArray[32]}"
+                    val code = textArray[0].uppercase()
+                    val name = textArray[17]
+                    val current = textArray[8].toDouble()
+                    val low = textArray[5].toDouble()
+                    val high = textArray[4].toDouble()
+                    val opening = textArray[3].toDouble()
+                    val change = (current - opening).twoDigits()
+                    val percentage = ((current - opening) / opening * 100).twoDigits()
+                    val updateAt = "${textArray[18]} ${textArray[1]}"
                     StockerQuote(
                         code = code,
                         name = name,
                         current = current,
                         opening = opening,
-                        close = close,
+                        close = current,
                         low = low,
                         high = high,
                         change = change,
